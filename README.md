@@ -47,18 +47,20 @@ NOTE: Your domain controller may present a dialog for Internet Explorer, as the 
 **Enabling the imported GPO requires that it be linked with either an AD Site, Organization Unit or top-level AD Domain. The design of your Active Directory forest will determine where/how you link this new GPO.**
 
 15. Determine where you will apply the new GPO layer, right click, and Link the Security Event Logging GPO
-to that AD namespace. 
+to that AD Object. 
 
 **NOTE: Any AD namespace where this GPO is not linked will not provide the increased system event logging we seek for our security outcomes.**
 16. Right click on the new GPO Link in your chosen OU/Domain/Site and ensure that the Security Event Logging GPO is set to Enabled.
 
 ## POLICY PUSH
-By degault Group Policy is refreshed every 90 minutes as a background task, and at system reboot. While the refresh interval can be
+By default Group Policies are refreshed every 90 minutes as a background task, and at system reboot. While the refresh interval can be
 configured, we can force an update to ensure immediate effect.
+
+If proper RPC services are available btwn the Domain Controller and client systems [RPC Services up and running, network and host-based firewalls properly configured), you can use the Group Policy Results Wizard to confirm the GPOs enabled on a particular domain client.
 
 ### The Group Policy Management Console can be used to remotely force a refresh across an entire OU.
 1. Open the Group Policy Management Console on your Domain Controller
-2. Right-click on the Domain/OU/Site and click the "Group Policy Update" option
+2. Right-click on the OU/Site and click the "Group Policy Update" option
 3. Click "OK" to confirm and complete the Group Policy Update action
 
 ### PowerShell invoke-GPUdate cmdlet
@@ -78,7 +80,7 @@ $adclients | ForEach-Object -Process {Invoke-GPUpdate -Computer $_.name -RandomD
 
 **NOTE: The `-Filter` parameter can be passed a modifier to focus the client list on a specific Active Directory object, such as members of an OU/Site/etc.**
 
-### Gpupdate via command prompt on a remote compouter
+### Gpupdate via command prompt on a remote computer
 The gpupdate command is a command-line utility that updates Group Policy Settings for the system on which the command is run. It does not have a remote command feature. To update the Group Policy on a local computer, run the following from a command prompt:
 
 ```
@@ -88,8 +90,7 @@ gpupdate /force
 This command will cause the client system to check in with it's Domain Controller and update Group Policy Settings for both Computer and User policy realms defined for that system.
 
 ## CONFIRM POLICY APPLICATION
-If proper RPC services are available btwn the Domain Controller and client systems, you can use the Group Policy Results Wizard to confirm the GPOs enabled on a particular domain client.
-
+If proper RPC services are available btwn the Domain Controller and client systems [RPC Services up and running, network and host-based firewalls properly configured), you can use the Group Policy Results Wizard to confirm the GPOs enabled on a particular domain client.
 
 ### Using PowerShell to remotely check Group Policies
 In a PowerShell window, enter the following code block
